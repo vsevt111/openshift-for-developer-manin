@@ -1,0 +1,13 @@
+# Get the secret token
+oc get -o yaml buildconfig/hello-world
+
+# Export the secret as a variable
+export GENERIC_SECRET=<generic token from previous command>
+
+# Get the webhook URL
+oc describe buildconfig/hello-world
+
+# Copy the webhook URL and replace <secret> with $GENERIC_SECRET
+curl -X POST -k <webhook URL with secret replaced with $GENERIC_SECRET>
+
+

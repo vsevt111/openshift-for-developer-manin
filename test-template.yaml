@@ -1,0 +1,255 @@
+apiVersion: v1
+# change from items to objects 
+objects:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: hello-world
+    name: hello-world
+    namespace: vsevt111-dev
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: hello-world
+      deploymentconfig: hello-world
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: hello-world
+          deploymentconfig: hello-world
+      spec:
+        containers:
+        - env:
+          - name: MESSAGE
+            value: ${MESSAGE}
+          image: quay.io/practicalopenshift/hello-world@sha256:2311b7a279608de9547454d1548e2de7e37e981b6f84173f2f452854d81d1b7e
+          imagePullPolicy: Always
+          name: hello-world
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - hello-world
+        from:
+          kind: ImageStreamTag
+          name: hello-world:latest
+          namespace: vsevt111-dev
+        lastTriggeredImage: quay.io/practicalopenshift/hello-world@sha256:2311b7a279608de9547454d1548e2de7e37e981b6f84173f2f452854d81d1b7e
+      type: ImageChange
+    latestVersion: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+    unavailableReplicas: 0
+    updatedReplicas: 1
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      openshift.io/image.dockerRepositoryCheck: "2023-09-09T03:01:44Z"
+    creationTimestamp: "2023-09-09T03:01:43Z"
+    generation: 2
+    labels:
+      app: hello-world
+    name: hello-world
+    namespace: vsevt111-dev
+    resourceVersion: "3028798397"
+    uid: 5b1f5e42-6a26-4546-90bc-d6a9d6a9d609
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: quay.io/practicalopenshift/hello-world
+      from:
+        kind: DockerImage
+        name: quay.io/practicalopenshift/hello-world
+      generation: 2
+      importPolicy:
+        importMode: Legacy
+      name: latest
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: image-registry.openshift-image-registry.svc:5000/vsevt111-dev/hello-world
+    publicDockerImageRepository: default-route-openshift-image-registry.apps.sandbox-m2.ll9k.p1.openshiftapps.com/vsevt111-dev/hello-world
+    tags:
+    - items:
+      - created: "2023-09-09T03:01:44Z"
+        dockerImageReference: quay.io/practicalopenshift/hello-world@sha256:2311b7a279608de9547454d1548e2de7e37e981b6f84173f2f452854d81d1b7e
+        generation: 2
+        image: sha256:2311b7a279608de9547454d1548e2de7e37e981b6f84173f2f452854d81d1b7e
+      tag: latest
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: "2023-09-09T03:01:44Z"
+    labels:
+      app: hello-world
+    name: hello-world
+    namespace: vsevt111-dev
+    resourceVersion: "3028798386"
+    uid: e83c1722-3bc0-4520-967c-b96df28d21fb
+  spec:
+    clusterIPs:
+    - 172.30.14.100
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: hello-world
+      deploymentconfig: hello-world
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: model-serving-proxy-tls
+      service.alpha.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1612378065
+      service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1612378065
+    creationTimestamp: "2023-09-09T03:00:22Z"
+    labels:
+      app.kubernetes.io/instance: modelmesh-controller
+      app.kubernetes.io/managed-by: modelmesh-controller
+      app.kubernetes.io/name: modelmesh-controller
+      modelmesh-service: modelmesh-serving
+    name: modelmesh-serving
+    namespace: vsevt111-dev
+    ownerReferences:
+    - apiVersion: v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Namespace
+      name: vsevt111-dev
+      uid: 7774762a-ba7b-4ebd-a3f6-75fac8c72716
+    resourceVersion: "3028795186"
+    uid: e930159f-f695-4bf7-88c6-bb163809474a
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: grpc
+      port: 8033
+      protocol: TCP
+      targetPort: grpc
+    - name: http
+      port: 8008
+      protocol: TCP
+      targetPort: http
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: https
+    - name: prometheus
+      port: 2112
+      protocol: TCP
+      targetPort: prometheus
+    selector:
+      modelmesh-service: modelmesh-serving
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- allowVolumeExpansion: true
+  apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+    creationTimestamp: "2021-02-03T18:47:40Z"
+    name: gp2
+    resourceVersion: "4216"
+    uid: 75848c6c-97e2-4152-b67c-de1ea388ae6b
+  parameters:
+    encrypted: "true"
+    type: gp2
+  provisioner: kubernetes.io/aws-ebs
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+- allowVolumeExpansion: true
+  apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    creationTimestamp: "2021-02-03T18:47:48Z"
+    name: gp2-csi
+    resourceVersion: "5114"
+    uid: 67a78c20-1641-46f8-a071-38c9513cdd56
+  parameters:
+    encrypted: "true"
+    type: gp2
+  provisioner: ebs.csi.aws.com
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+- allowVolumeExpansion: true
+  apiVersion: storage.k8s.io/v1
+  kind: StorageClass
+  metadata:
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "false"
+    creationTimestamp: "2022-03-11T03:22:04Z"
+    name: gp3-csi
+    resourceVersion: "1983165341"
+    uid: 55c0d630-6b4c-49d6-bb79-757024c9326d
+  parameters:
+    encrypted: "true"
+    type: gp3
+  provisioner: ebs.csi.aws.com
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+# change list to template
+kind: Template
+metadata:
+  # add name 
+  name: test-template
+  resourceVersion: ""
+parameters:
+- description: Message to respond to requests with
+  displayName: Message
+  name: MESSAGE
+  required: false
+  value: Hello from the default value for the template

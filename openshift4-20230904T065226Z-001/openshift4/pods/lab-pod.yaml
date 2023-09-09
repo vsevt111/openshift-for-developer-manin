@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lab-pod
+  labels:
+    app: lab-pod
+spec:
+  containers:
+  - env:
+    - name: MESSAGE
+      value: Hi! I'm an Manin Tangkunathan
+    image: quay.io/practicalopenshift/hello-world
+    imagePullPolicy: Always
+    name: hello-world-override
+    resources: {}

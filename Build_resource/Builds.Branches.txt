@@ -1,0 +1,4 @@
+# Start a new build from the update-message branch
+oc new-build https://gitlab.com/practical-openshift/hello-world.git#update-message
+
+

@@ -1,0 +1,3 @@
+# Cancel a running build
+oc cancel-build bc/hello-world
+

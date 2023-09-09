@@ -1,0 +1,26 @@
+# Make a new project for the scaling section
+oc new-project scaling
+
+# Deploy Hello World
+oc new-app quay.io/practicalopenshift/hello-world
+
+# Get the definition
+oc describe dc/hello-world
+
+# Manual scale to 3 pods
+oc scale dc/hello-world --replicas=3
+
+# Check the definition again
+oc describe dc/hello-world
+
+# Check on the pods
+oc get pods
+
+# Scale back down
+oc scale dc/hello-world --replicas=1
+
+# Last definition check
+oc describe dc/hello-world
+
+
+

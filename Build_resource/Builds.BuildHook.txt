@@ -1,0 +1,24 @@
+# Set a post-commit hook
+oc set build-hook bc/hello-world \
+  --post-commit \
+  --script="echo Hello from build hook"
+
+# Start a build to check it out
+oc start-build bc/hello-world
+
+# Check the logs output for "Hello from build hook"
+oc logs -f bc/hello-world
+
+# Set a failing build hook to observe the behavior
+oc set build-hook bc/hello-world \
+  --post-commit \
+  --script="exit 1"
+
+# Check the events to see if it ran
+oc get events
+
+# Remove the build hook
+oc set build-hook bc/hello-world \
+  --post-commit \
+  --remove
+
